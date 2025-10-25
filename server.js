@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 // Initialize Express app
 const app = express();
 const PORT = process.env.PORT || 3000;
-const AUTH_API_KEY = process.env.API_KEY || 'PLP_API_KEY'; 
+const AUTH_API_KEY = process.env.API_KEY || 'PLP_SECRET_KEY'; 
 
 // Middleware setup
 app.use(bodyParser.json());
