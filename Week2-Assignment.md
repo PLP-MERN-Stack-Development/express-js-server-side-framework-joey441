@@ -1,74 +1,69 @@
-# 🚂 Week 2: Express.js – Server-Side Framework
+# Express.js RESTful Product API Assignment
 
-## 🚀 Objective
-Build a RESTful API using Express.js that implements standard CRUD operations, proper routing, middleware implementation, and error handling.
+This project implements a complete RESTful API for managing a 'Product' resource using Express.js. It includes comprehensive routing, custom middleware for security and logging, and advanced query features.
 
-## 📂 Tasks
+## 🚀 Getting Started
 
-### Task 1: Express.js Setup
-- Initialize a new Node.js project
-- Install Express.js and required dependencies
-- Create a basic Express server that listens on port 3000
-- Implement a "Hello World" route at the root endpoint
+1.  **Clone the Repository:**
+    ```bash
+    git clone [YOUR_REPOSITORY_URL]
+    cd express-js-server-side-framework-joey441
+    ```
 
-### Task 2: RESTful API Routes
-- Create a resource called `products` with the following fields:
-  - `id` (unique identifier)
-  - `name` (string)
-  - `description` (string)
-  - `price` (number)
-  - `category` (string)
-  - `inStock` (boolean)
-- Implement the following RESTful routes:
-  - `GET /api/products`: List all products
-  - `GET /api/products/:id`: Get a specific product by ID
-  - `POST /api/products`: Create a new product
-  - `PUT /api/products/:id`: Update an existing product
-  - `DELETE /api/products/:id`: Delete a product
+2.  **Install Dependencies:**
+    Since the repository did not initially include a `package.json`, the following commands were used to initialize the project and install required dependencies:
+    ```bash
+    npm init -y
+    npm install express body-parser uuid
+    ```
 
-### Task 3: Middleware Implementation
-- Create a custom logger middleware that logs the request method, URL, and timestamp
-- Implement a middleware to parse JSON request bodies
-- Create an authentication middleware that checks for an API key in the request headers
-- Add validation middleware for the product creation and update routes
+3.  **Environment Variables:**
+    Create a file named **`.env`** based on the `.env.example` file and set your API key. The application uses the following secret for authentication:
+    ```
+    # .env file content
+    PORT=3000
+    API_KEY=PLP_SECRET_KEY 
+    ```
 
-### Task 4: Error Handling
-- Implement global error handling middleware
-- Create custom error classes for different types of errors (e.g., NotFoundError, ValidationError)
-- Add proper error responses with appropriate HTTP status codes
-- Handle asynchronous errors using try/catch blocks or a wrapper function
+4.  **Run the Server:**
+    ```bash
+    npm start
+    ```
+    The server will be running at `http://localhost:3000`.
 
-### Task 5: Advanced Features
-- Implement query parameters for filtering products by category
-- Add pagination support for the product listing endpoint
-- Create a search endpoint that allows searching products by name
-- Implement route for getting product statistics (e.g., count by category)
+## ⚙️ Middleware Implementation
 
-## 🧪 Expected Outcome
-- A fully functional Express.js API with proper RESTful routes
-- Well-structured middleware for logging, authentication, and validation
-- Comprehensive error handling with appropriate status codes and messages
-- Advanced features like filtering, pagination, and search
+The API utilizes three custom middleware functions to enforce security and maintain logs:
 
-## 🛠️ Setup
-1. Make sure you have Node.js installed (v18 or higher recommended)
-2. Use the provided `server.js` file as a starting point
-3. Install the required dependencies:
-   ```
-   npm install express body-parser uuid
-   ```
-4. For testing your API, you can use tools like Postman, Insomnia, or curl
+1.  **Request Logging (`requestLogger`):**
+    * **Function:** Logs the timestamp, HTTP method, and URL of every incoming request to the console.
+    * **Application:** Applied globally (`app.use(requestLogger)`).
 
-## ✅ Submission Instructions
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Add the following files to your repository:
-   - All your project files (server.js, routes, middleware, etc.)
-   - A `README.md` file with:
-     - Instructions on how to run your server
-     - Documentation of your API endpoints
-     - Examples of requests and responses
-   - A `.env.example` file showing required environment variables
-4. Commit and push your changes to GitHub
-5. Your submission will be automatically graded based on the criteria in the autograding configuration
-6. The instructor will review your submission after the autograding is complete 
+2.  **Authentication (`authenticate`):**
+    * **Function:** Checks for the presence and validity of an API key in the `x-api-key` HTTP header.
+    * **Requirement:** The header must match the `API_KEY` defined in the environment variables (`PLP_SECRET_KEY`).
+    * **Application:** Applied to all routes that modify data (`POST`, `PUT`, `DELETE`).
+
+3.  **Validation (`validateProduct`):**
+    * **Function:** Ensures the request body for product creation/update contains the required fields (`name`, `description`, `price`, `category`) and that `price` is a positive number.
+    * **Application:** Applied to `POST /api/products` and `PUT /api/products/:id`.
+
+## 🌐 API Endpoints Documentation
+
+All endpoints require the base URL: `http://localhost:3000/api/products`.
+
+### 1. GET /api/products
+
+Retrieves a list of all products. Supports advanced filtering, searching, and pagination via query parameters.
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `category` | string | Filters products by category (e.g., `electronics`). |
+| `search` | string | Filters products whose `name` or `description` contains the search term. |
+| `limit` | number | Limits the number of results per page (default: 10). |
+| `page` | number | Specifies the page number to retrieve (default: 1). |
+
+**Example Request (Filtering & Pagination):**
+
+```bash
+curl "http://localhost:3000/api/products?category=electronics&limit=1&page=2"
